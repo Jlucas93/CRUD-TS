@@ -9,13 +9,19 @@ const UserController = {
   },
   getUserById: (req: express.Request, res: express.Response) => {
     const { id } = req.params
-    const userId = user.getUserById(Number(id))
+    const userId = user.getUserById(id)
     return res.status(200).json(userId)
   },
-  postuser: (req: express.Request, res: express.Response) => {
-    const { id } = req.params
-    const userPost = user.postUser()
-    res.status(200).json({ userPost, id })
+  createUser: async (req: express.Request, res: express.Response) => {
+    const { name, lastName, email, password } = req.body
+    const newUser = {
+      name,
+      lastName,
+      email,
+      password,
+    }
+    await user.createUser(newUser)
+    res.status(200).json({ newUser })
   },
   updateUser: (req: express.Request, res: express.Response) => {
     const userPut = user.updateUser()

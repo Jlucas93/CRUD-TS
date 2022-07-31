@@ -3,13 +3,28 @@ import * as express from "express"
 
 const ProductController = {
 
-  getProduct: (req: express.Request, res: express.Response) => {
-    res.status(200).json('Rota get funcionando')
+  getProduct: async (_req: express.Request, res: express.Response) => {
+    try {
+      const products = await product.getProduct()
+
+      return res.status(200).json({ products })
+    } catch (err) {
+
+      return res.status(500).json({ error: err, message: 'Error to get products' });
+    }
   },
-  getProductById: (req: express.Request, res: express.Response) => {
+  getProductById: async (req: express.Request, res: express.Response) => {
     const { id } = req.params
-    const productId = product.getProductById(Number(id))
-    return res.status(200).json(productId)
+    try {
+      const Product = await product.getProductById(id)
+      if (Product) {
+        return res.status(200).json({ Product })
+      } else {
+        return res.status(500).json({ message: 'Product not found' })
+      }
+    } catch (error) {
+      return res.status(400).json({ error: error, message: "error" })
+    }
   },
   createProduct: async (req: express.Request, res: express.Response) => {
     const { name, price, description } = req.body
@@ -24,16 +39,32 @@ const ProductController = {
       return res.status(201).json({ newProduct })
 
     } catch (error) {
-      return res.status(500).json({ error: error, message: "erro" })
+      return res.status(400).json({ error: error, message: "error" })
     }
   },
-  updateProduct: (req: express.Request, res: express.Response) => {
-    const productPut = product.updateProduct()
-    res.status(200).json(productPut)
+  updateProduct: async (req: express.Request, res: express.Response) => {
+    const { id,
+      name,
+      price,
+      description } = req.body
+
+    const Product = {
+      name,
+      price,
+      description
+    }
+    await product.updateProduct(id, Product)
+
+    res.status(200).json(Product)
   },
-  deleteProduct: (req: express.Request, res: express.Response) => {
-    const productDelete = product.deleteProduct()
-    res.status(200).json(productDelete)
+  deleteProduct: async (req: express.Request, res: express.Response) => {
+    const { id } = req.params
+    try {
+      await product.deleteProduct(id)
+      return res.status(200).json({ message: "Product Deleted" })
+    } catch (error) {
+      return res.status(400).json({ error: error, message: "error" })
+    }
   }
 }
 

@@ -1,21 +1,34 @@
-import { userDatabase } from '../../database/exportDatabase'
-class User {
+import { User } from '../../interfaces/exportInterfaces'
+import admin from "firebase-admin"
+import { v4 as idGenerator } from 'uuid'
 
-  getUser = () => {
-    return userDatabase.getuser()
+const fireStore = admin.firestore()
+class Users {
+
+  getUser = async () => {
+    const collection = fireStore.collection('products')
+
+    const products = (await collection.get())
+      .docs
+      .map(product => product.data())
+
+    return products
   }
-  getUserById = (id: number) => {
-    return userDatabase.getUserById(id)
+  getUserById = (id: string) => {
+
   }
-  postUser = () => {
-    return userDatabase.postUser()
+  createUser = async (User: User) => {
+    User.id = idGenerator()
+    await fireStore.collection('products').doc().set(User);
+
+    return (User)
   }
   updateUser = () => {
-    return userDatabase.updateUser()
+
   }
   deleteUser = () => {
-    return userDatabase.deleteUser()
+
   }
 }
 
-export const user = new User();
+export const user = new Users();
