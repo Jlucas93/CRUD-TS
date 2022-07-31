@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-
+import Header from './components/Header'
 interface Product {
   id?: number,
   name: String,
@@ -9,8 +9,8 @@ interface Product {
 }
 
 function App() {
-  const [product, setProduct] = useState<Product[]>([])
-
+  const [product, setProduct] = useState<Product[]>()
+  
   useEffect(() => {
     axios.get('http://localhost:5000/backend-ts-327b7/us-central1/app/product')
       .then(({ data }) => setProduct(data.products))
@@ -19,6 +19,7 @@ function App() {
   return (
     <>
       <div>
+        <Header/>
         {product && (
           <table>
             <tr>
