@@ -7,11 +7,8 @@ class Products {
   getProduct = async () => {
     const collection = fireStore.collection('products')
 
-    /*     const products = (await collection.get())
-          .docs
-          .map(product => product.data()) */
-
-    const products = await collection.get()
+    const products = await collection
+      .get()
       .then(data => (
         data.docs.map(product => ({
           id: product.id,
