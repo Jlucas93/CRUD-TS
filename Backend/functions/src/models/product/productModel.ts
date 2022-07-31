@@ -17,6 +17,14 @@ class Products {
       ))
     return products
   }
+  getByName = async (name: string) => {
+    const Product = await fireStore
+      .collection('products')
+      .where('name', "==", name)
+      .get()
+
+    return Product
+  }
   getProductById = async (id: string) => {
     const Product = await fireStore
       .collection('products')
@@ -27,18 +35,26 @@ class Products {
   }
   createProduct = async (Product: Product) => {
     Product.id = idGenerator()
-    await fireStore.collection('products').doc().set(Product);
+    await fireStore
+      .collection('products')
+      .doc()
+      .set(Product);
 
     return (Product)
+  }
+  updateProduct = async (id: string, Product: Product) => {
+    const product = await fireStore
+      .collection('products')
+      .doc(id)
+      .set(Product)
+
+    return product
   }
   deleteProduct = async (id: string) => {
     await fireStore
       .collection('products')
       .doc(id)
       .delete();
-  }
-  updateProduct = async (id: string, product: Product) => {
-
   }
 }
 

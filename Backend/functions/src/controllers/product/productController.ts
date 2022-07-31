@@ -28,6 +28,12 @@ const ProductController = {
   },
   createProduct: async (req: express.Request, res: express.Response) => {
     const { name, price, description } = req.body
+
+    const verify = await product.getByName(name)
+
+    if (verify) {
+      return res.status(400).json({ message: 'Product already exists' })
+    }
     try {
       const newproduct = {
         name,
@@ -43,19 +49,23 @@ const ProductController = {
     }
   },
   updateProduct: async (req: express.Request, res: express.Response) => {
-    const { id,
+    const { id } = req.params
+    const {
       name,
       price,
       description } = req.body
+    try {
+      const Product = {
+        name,
+        price,
+        description
+      }
+      await product.updateProduct(id, Product)
 
-    const Product = {
-      name,
-      price,
-      description
+      return res.status(200).json({ Product })
+    } catch (error) {
+      return res.status(400).json({ error: error, message: "error" })
     }
-    await product.updateProduct(id, Product)
-
-    res.status(200).json(Product)
   },
   deleteProduct: async (req: express.Request, res: express.Response) => {
     const { id } = req.params
