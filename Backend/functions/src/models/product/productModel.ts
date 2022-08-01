@@ -3,7 +3,7 @@ import admin from "firebase-admin"
 import { v4 as idGenerator } from 'uuid'
 
 const fireStore = admin.firestore()
-const Products = {
+export const product = {
   async getProduct() {
     const collection = fireStore.collection('products')
 
@@ -57,5 +57,3 @@ const Products = {
       .delete();
   }
 }
-
-export const product = Products;
