@@ -17,8 +17,6 @@ export const Column = styled.div`
   }
 `
 export const Footer = styled.footer`
-  position:absolute;
-  bottom:0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -26,8 +24,6 @@ export const Footer = styled.footer`
   flex-direction: row;
   width: 100%;
   margin: auto;
-  margin-bottom: 0px;
-  min-height: 10rem;
   padding: 1rem 2rem;
   background-color: #2b2b2b;
   color: #e01a4f;

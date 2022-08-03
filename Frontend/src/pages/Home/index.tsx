@@ -1,10 +1,13 @@
 import * as S from './style'
-
+import Table from 'components/Table'
 const Home = () =>{
   //render
   return(
     <S.Container>
-      Hello World
+      <S.Title>
+      Lista de Produtos
+      </S.Title>
+      <Table></Table>
     </S.Container>
   )
 }

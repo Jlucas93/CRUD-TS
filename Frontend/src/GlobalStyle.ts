@@ -18,6 +18,8 @@ const GlobalStyle = createGlobalStyle`
   html, body, #root {
     height: 100%;
     width:100%;
+    color: #000;
+    font-size:16px;
   }
 `
 export default GlobalStyle

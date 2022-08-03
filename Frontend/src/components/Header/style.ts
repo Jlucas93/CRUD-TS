@@ -1,11 +1,9 @@
 import styled from "styled-components"
 
 export const Header = styled.div`
-  position: absolute;
-  top:0;
   width: 100%;
   height: 5rem;
-`
+  `
 
 export const Nav = styled.nav`
   background-color: #2b2b2b;
