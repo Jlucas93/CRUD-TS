@@ -6,15 +6,18 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-family: 'Roboto', -apple-system, system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-  }
-  body {
-    background-color: #fff;
-    color: #161616;
   }
   ul {
     list-style-type: none;
+  }
+  a {
+    text-decoration:none;
+    color:#53b3cb;
+  }
+  html, body, #root {
+    height: 100%;
+    width:100%;
   }
 `
 export default GlobalStyle

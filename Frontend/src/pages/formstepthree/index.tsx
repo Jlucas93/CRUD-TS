@@ -1,9 +1,11 @@
 import * as S from './style'
 
-export const FormStepThree = () => {
+const FormStepThree = () => {
+  //Render
   return (
     <S.Container>
       Passo 3
     </S.Container>
   )
 }
+export default FormStepThree
