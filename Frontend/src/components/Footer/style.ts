@@ -21,9 +21,8 @@ export const Footer = styled.footer`
   flex-direction: row;
   align-items: center;
   justify-content:space-around;
-  flex-direction: row;
   width: 100%;
-  margin: auto;
+  margin-top: 1rem;
   padding: 1rem 2rem;
   background-color: #2b2b2b;
   color: #e01a4f;
