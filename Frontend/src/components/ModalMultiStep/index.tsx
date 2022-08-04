@@ -28,43 +28,58 @@ const steps = [
 
 const ModalMultiStep: React.FC<Props> = ({ product, onAdd, onClose, onUpdate }) => {
   //State
-  const [currentStep, setCurrentStep] = useState(0);
-  //Refs
-  const inputRef = useRef<HTMLInputElement>(null)
-
+  const [currentStep, setCurrentStep] = useState(0)
+  // Refs
+  const formRef = React.useRef<HTMLFormElement>(null)
+  const bodyRef = React.useRef(product || {})
+  // Callbacks
   const handleNext = () => {
+    if (!formRef.current)
+      return
+    Object.assign(
+      bodyRef.current,
+      Object.fromEntries(
+        (Object.values(formRef.current) as HTMLInputElement[])
+          .filter(element => element.value)
+          .map(element => [element.name, element.value])
+      )
+    )
     setCurrentStep((prevState) => prevState + 1)
   }
   const handlePrevious = () => {
-    setCurrentStep((prevState) => prevState - 1);
-  }
-  const handleSubmit = (event: any) => {
-    event.preventDefault()
-    const formElement = event.target as HTMLFormElement
-    const [
-      input_name,
-      input_price,
-      input_description
-    ] = Object.values(formElement)
-    if (inputRef.current === undefined || inputRef.current === null) {
+    if (!formRef.current)
       return
-    }
-    const body = {
-      [inputRef.current.name]: inputRef.current.value,
-      [inputRef.current.name]: parseFloat((inputRef.current.value).toString()),
-      [inputRef.current.name]: inputRef.current.value
-    }
-    console.log(body)
+    Object.assign(
+      bodyRef.current,
+      Object.fromEntries(
+        (Object.values(formRef.current) as HTMLInputElement[])
+          .filter(element => element.value)
+          .map(element => [element.name, element.value])
+      )
+    )
+    setCurrentStep((prevState) => prevState - 1)
+  }
+  const handleSubmit = React.useCallback((event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    Object.assign(
+      bodyRef.current,
+      Object.fromEntries(
+        (Object.values(event.target) as HTMLInputElement[])
+          .filter(element => element.value)
+          .map(element => [element.name, element.value])
+      )
+    )
+    console.log(product)
     product
-      ? api.put(`/product/${product.id}`, body)
-        .then(() => onUpdate(product, body))
+      ? api.put(`/product/${product.id}`, bodyRef.current)
+        .then(() => onUpdate(product, bodyRef.current))
         .catch(({ message }) => console.log(message))
-      : api.post('/product', body)
+      : api.post('/product', bodyRef.current)
         .then(() => (
-          onAdd(body)
+          onAdd(bodyRef.current)
         ))
     onClose()
-  }
+  }, [])
   return (
     <Modal
       isOpen={product !== null}
@@ -82,36 +97,40 @@ const ModalMultiStep: React.FC<Props> = ({ product, onAdd, onClose, onUpdate }) 
         <S.Span>
           {currentStep + 1} de {steps.length}
         </S.Span>
-        <S.ModalForm>
+        <S.ModalForm
+          ref={formRef}
+          onSubmit={handleSubmit}
+        >
           <S.Span>
             {steps[currentStep].title}
           </S.Span>
           {steps[currentStep].id === "NAME" && (
-            <S.Input
-              ref={inputRef}
-              type="text"
-              name="name"
-              placeholder="Name of the Product"
-              defaultValue={product?.name}
-            />
+            <>
+              <label htmlFor="name-input">Name</label>
+              <S.Input
+                id="name-input"
+                type="text"
+                name="name"
+                placeholder="Name of the Product"
+                defaultValue={product?.name}
+              />
+            </>
           )}
 
           {steps[currentStep].id === "PRICE" && (
             <S.Input
-              ref={inputRef}
               type="text"
               placeholder="price"
               name="price"
-              defaultValue={product?.price}
+              defaultValue={bodyRef.current.price}
             />
           )}
           {steps[currentStep].id === "DESCRIPTION" && (
             <S.Input
-              ref={inputRef}
               type="text"
               placeholder="Description"
               name="description"
-              defaultValue={product?.description}
+              defaultValue={bodyRef.current.description}
             />
           )}
 
@@ -145,7 +164,7 @@ const ModalMultiStep: React.FC<Props> = ({ product, onAdd, onClose, onUpdate }) 
                   </S.Button>
                 )}
                 <S.Button
-                  onClick={handleSubmit}
+                  type='submit'
                 >
                   Submit
                 </S.Button >

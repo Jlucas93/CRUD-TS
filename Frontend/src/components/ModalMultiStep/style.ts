@@ -19,7 +19,7 @@ export const ModalHeader = styled.div`
   text-decoration:underline #E01A4F;
   padding: 1rem;
 `
-export const ModalForm = styled.div`
+export const ModalForm = styled.form`
   display: flex;
   align-items: center;
   flex-direction: column;
