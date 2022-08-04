@@ -29,11 +29,11 @@ const ProductController = {
   createProduct: async (req: express.Request, res: express.Response) => {
     const { name, price, description } = req.body
 
-    /*     const verify = await product.getByName(name)
-    
-        if (verify) {
-          return res.status(400).json({ message: 'Product already exists' })
-        } */
+    const verify = await product.getByName(name)
+
+    if (verify) {
+      return res.status(400).json({ message: 'Product already exists' })
+    }
     try {
       const newproduct = {
         name,

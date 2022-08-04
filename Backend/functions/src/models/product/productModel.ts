@@ -1,6 +1,5 @@
 import { Product } from "../../interfaces/exportInterfaces"
 import admin from "firebase-admin"
-import { v4 as idGenerator } from 'uuid'
 
 const fireStore = admin.firestore()
 export const product = {
@@ -20,7 +19,7 @@ export const product = {
   async getByName(name: string) {
     const Product = await fireStore
       .collection('products')
-      .where('name', "==", name)
+      .doc(name)
       .get()
 
     return Product
@@ -30,11 +29,13 @@ export const product = {
       .collection('products')
       .doc(id)
       .get()
+    if (product) {
 
-    return Product.data()
+      return Product.data()
+    }
+    return false
   },
   async createProduct(Product: Product) {
-    Product.id = idGenerator()
     await fireStore
       .collection('products')
       .doc()

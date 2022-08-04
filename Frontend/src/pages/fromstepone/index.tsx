@@ -1,9 +1,10 @@
 import * as S from './style'
+import ModalMultiStep from 'components/ModalMultiStep'
 
 const FormStepOne = () => {
   return (
     <S.Container>
-      Passo 1
+      <ModalMultiStep/>
     </S.Container>
   )
 }

@@ -40,7 +40,7 @@ const Header = () => {
         </S.Row>
       </S.Column>
       <S.Column>
-      <S.FooterTitle>Frontend Tecnologies</S.FooterTitle>
+      <S.FooterTitle>Project Tecnologies</S.FooterTitle>
         <S.Row>
           <Icons.ReactIcon/>
           <S.Span>
@@ -54,8 +54,9 @@ const Header = () => {
           </S.Span>
         </S.Row>
         <S.Row>
+          <Icons.Node/>
           <S.Span>
-            Axios
+            NodeJs
           </S.Span>
         </S.Row>
       </S.Column>

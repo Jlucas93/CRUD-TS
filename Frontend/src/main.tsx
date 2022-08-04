@@ -3,12 +3,14 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import App from 'App'
 import GlobalStyle from 'GlobalStyle'
 import Home from 'pages/Home'
-import FormStepOne from 'pages/Fromstepone'
-import FormStepTwo from 'pages/Formsteptwo'
-import FormStepThree from 'pages/Formstepthree'
+import FormStepOne from 'pages/fromstepone'
+import FormStepTwo from 'pages/formsteptwo'
+import FormStepThree from 'pages/formstepthree'
 import NotFound from 'pages/NotFound'
+import {FormProvider} from 'components/Context/FormContext'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
+
   <BrowserRouter>
     <GlobalStyle />
     <Routes>
@@ -24,4 +26,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       />
     </Routes>
   </BrowserRouter>
+
 )
