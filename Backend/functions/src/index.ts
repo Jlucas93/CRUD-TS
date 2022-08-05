@@ -1,5 +1,5 @@
 //Configuração do firestore
-import privateKey from './config/priveKey.json'
+import privateKey from './config/privateKey.json'
 const admin = require("firebase-admin")
 
 const serviceAccount = privateKey
