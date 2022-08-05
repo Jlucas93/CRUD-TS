@@ -1,11 +1,10 @@
-import * as S from './style'
-import Table from 'components/Table'
 import { useState, useEffect, useCallback } from 'react'
-import * as Icons from 'components/Icons'
-import Load from 'components/Load'
-import ModalProduct from 'components/ModalProduct'
-import { Api, api } from 'utils/api'
+import Table from 'components/Table'
 import ModalMultiStep from 'components/ModalMultiStep'
+import Load from 'components/Load'
+import { Api, api } from 'utils/api'
+import * as Icons from 'components/Icons'
+import * as S from './style'
 
 const Home = () => {
 
@@ -60,9 +59,37 @@ const Home = () => {
           onDelete={onDelete}
         />
         <ModalMultiStep
-          product={productUpdate}
-          onAdd={onAdd}
-          onUpdate={onUpdate}
+          initialProps={productUpdate}
+          onSubmit={new_product => {
+            if (productUpdate) {
+              api.put(`/product/${productUpdate.id}`, new_product)
+                .then(() => onUpdate(productUpdate, new_product))
+                .catch(({ message }) => console.log(message))
+            } else {
+
+              api.post('/product', new_product)
+                .then(() => (
+                  onAdd(new_product)
+                ))
+            }
+          }}
+          steps={[
+            [
+              {
+                name: 'name'
+              }
+            ],
+            [
+              {
+                name: 'price'
+              }
+            ],
+            [
+              {
+                name: 'description'
+              }
+            ]
+          ]}
           onClose={() => setProductUpdate(null)}
         />
       </S.Container>

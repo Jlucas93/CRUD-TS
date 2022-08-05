@@ -21,8 +21,11 @@ export const product = {
       .collection('products')
       .doc(name)
       .get()
+      if (product) {
 
-    return Product
+        return Product.data()
+      }
+      return false
   },
   async getProductById(id: string) {
     const Product = await fireStore

@@ -1,39 +1,34 @@
-import React, { useRef, useState } from 'react';
-import Modal from 'components/Modal';
-import { api, Api } from 'utils/api'
-import * as S from './style'
+import React from 'react';
+import * as S from './styles'
+import Modal from 'components/Modal'
 import * as Icons from 'components/Icons'
 
-interface Props {
-  product: Api.Product | undefined | null
-  onClose: () => void
-  onAdd: (body: Api.Product) => void
-  onUpdate: (product: Api.Product, body: Partial<Api.Product>) => void
+interface IStep<T extends { [key: string]: any }> {
+  name: keyof T & string
+  type?: string
 }
 
-const steps = [
-  {
-    id: "NAME",
-    title: "Name of the Product"
-  },
-  {
-    id: "PRICE",
-    title: "Price of Product"
-  },
-  {
-    id: "DESCRIPTION",
-    title: "Description of Product"
-  }
-];
+interface Props<T extends { [key: string]: any } = any> {
+  initialProps?: T | undefined | null
+  steps: IStep<T>[][]
+  onSubmit: (body: T) => void
+  onClose: () => void
+}
 
-const ModalMultiStep: React.FC<Props> = ({ product, onAdd, onClose, onUpdate }) => {
+function ModalMultiSteps<T extends { [key: string]: any } = any>({
+  initialProps,
+  steps,
+  onSubmit,
+  onClose
+}: Props<T>) {
   //State
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = React.useState(0)
   // Refs
   const formRef = React.useRef<HTMLFormElement>(null)
-  const bodyRef = React.useRef(product || {})
+  const bodyRef = React.useRef<T | null>(null)
+  const body = bodyRef.current || initialProps || {} as T
   // Callbacks
-  const handleNext = () => {
+  const saveInputsState = React.useCallback(() => {
     if (!formRef.current)
       return
     Object.assign(
@@ -44,136 +39,75 @@ const ModalMultiStep: React.FC<Props> = ({ product, onAdd, onClose, onUpdate }) 
           .map(element => [element.name, element.value])
       )
     )
-    setCurrentStep((prevState) => prevState + 1)
-  }
-  const handlePrevious = () => {
-    if (!formRef.current)
-      return
-    Object.assign(
-      bodyRef.current,
-      Object.fromEntries(
-        (Object.values(formRef.current) as HTMLInputElement[])
-          .filter(element => element.value)
-          .map(element => [element.name, element.value])
-      )
-    )
-    setCurrentStep((prevState) => prevState - 1)
-  }
-  const handleSubmit = React.useCallback((event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    Object.assign(
-      bodyRef.current,
-      Object.fromEntries(
-        (Object.values(event.target) as HTMLInputElement[])
-          .filter(element => element.value)
-          .map(element => [element.name, element.value])
-      )
-    )
-    console.log(product)
-    product
-      ? api.put(`/product/${product.id}`, bodyRef.current)
-        .then(() => onUpdate(product, bodyRef.current))
-        .catch(({ message }) => console.log(message))
-      : api.post('/product', bodyRef.current)
-        .then(() => (
-          onAdd(bodyRef.current)
-        ))
-    onClose()
   }, [])
+  const handlePrevious = React
+    .useCallback((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.preventDefault()
+      saveInputsState()
+      setCurrentStep(currentStep - 1)
+    }, [currentStep])
+  const handleNext = React.useCallback((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault()
+    saveInputsState()
+    setCurrentStep(currentStep + 1)
+  }, [currentStep])
+  // Effects
+  React.useEffect(() => {
+    if (initialProps !== null) {
+      bodyRef.current = { ...initialProps } as T
+    } else {
+      setCurrentStep(0)
+      bodyRef.current = null
+    }
+  }, [initialProps])
+  // Render
   return (
     <Modal
-      isOpen={product !== null}
+      isOpen={initialProps !== null}
       close={onClose}
     >
-      <S.ModalContainer>
-        <S.ModalHeader>
-          <S.ModalTitle>Multi Step Form</S.ModalTitle>
+      <S.Container>
+        <S.Header>
+          <S.Title>Multi Step Form</S.Title>
           <S.CloseButton
             onClick={onClose}
           >
             <Icons.Close />
           </S.CloseButton>
-        </S.ModalHeader>
-        <S.Span>
-          {currentStep + 1} de {steps.length}
-        </S.Span>
-        <S.ModalForm
+        </S.Header>
+        <S.Form
           ref={formRef}
-          onSubmit={handleSubmit}
+          onSubmit={event => {
+            event.preventDefault()
+            saveInputsState()
+            onSubmit(body)
+            console.log(body)
+          }}
         >
           <S.Span>
-            {steps[currentStep].title}
+          Passo {currentStep + 1} de {steps.length}
           </S.Span>
-          {steps[currentStep].id === "NAME" && (
-            <>
-              <label htmlFor="name-input">Name</label>
-              <S.Input
-                id="name-input"
-                type="text"
-                name="name"
-                placeholder="Name of the Product"
-                defaultValue={product?.name}
-              />
-            </>
-          )}
-
-          {steps[currentStep].id === "PRICE" && (
+          {steps[currentStep].map((inputProps, i) => (
             <S.Input
-              type="text"
-              placeholder="price"
-              name="price"
-              defaultValue={bodyRef.current.price}
+              key={inputProps.name as string}
+              {...inputProps}
+              defaultValue={body[inputProps.name]}
             />
-          )}
-          {steps[currentStep].id === "DESCRIPTION" && (
-            <S.Input
-              type="text"
-              placeholder="Description"
-              name="description"
-              defaultValue={bodyRef.current.description}
-            />
-          )}
-
-          <S.ModalFooter>
-            {currentStep < steps.length - 1 && (
-              <>
-                {(currentStep - steps.length) > -3 && (
-                  < S.Button
-                    type='button'
-                    onClick={handlePrevious}
-                  >
-                    Previous
-                  </S.Button>
-                )}
-                <S.Button
-                  type='button'
-                  onClick={handleNext}
-                >
-                  Next
-                </S.Button >
-              </>
-            )}
-            {currentStep === steps.length - 1 && (
-              <>
-                {(currentStep - steps.length) > -3 && (
-                  < S.Button
-                    type='button'
-                    onClick={handlePrevious}
-                  >
-                    Previous
-                  </S.Button>
-                )}
-                <S.Button
-                  type='submit'
-                >
-                  Submit
-                </S.Button >
-              </>
-            )}
-          </S.ModalFooter>
-        </S.ModalForm>
-      </S.ModalContainer>
+          ))}
+        </S.Form>
+          <S.Footer>
+            {currentStep !== 0 ? (
+              <S.Button onClick={handlePrevious}>Voltar</S.Button>
+            ) : null}
+            {currentStep === steps.length - 1
+              ? (
+                <S.Button>Submit</S.Button>
+              ) : (
+                <S.Button onClick={handleNext}>Próximo</S.Button>
+              )}
+          </S.Footer>
+      </S.Container>
     </Modal >
   );
 }
-export default ModalMultiStep
+export default ModalMultiSteps

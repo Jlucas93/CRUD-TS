@@ -30,23 +30,22 @@ const ProductController = {
     const { name, price, description } = req.body
 
     const verify = await product.getByName(name)
+    console.log(verify)
 
-    if (verify) {
-      return res.status(400).json({ message: 'Product already exists' })
-    }
-    try {
-      const newproduct = {
-        name,
-        price,
-        description
+      try {
+        const newproduct = {
+          name,
+          price,
+          description
+        }
+        const newProduct = await product.createProduct(newproduct)
+  
+        return res.status(201).json({ newProduct })
+  
+      } catch (error) {
+        return res.status(400).json({ error: error.toString(), message: "error" })
       }
-      const newProduct = await product.createProduct(newproduct)
-
-      return res.status(201).json({ newProduct })
-
-    } catch (error) {
-      return res.status(400).json({ error: error, message: "error" })
-    }
+    
   },
   updateProduct: async (req: express.Request, res: express.Response) => {
     const { id } = req.params
