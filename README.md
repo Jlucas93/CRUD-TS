@@ -1,6 +1,5 @@
 # CRUD-TS
 ## Sobre o Projeto
-<b>Em desenvolviemtno</b>
 
 Este projeto consiste em criar um <strong>CRUD</strong>(Create, Read, Update, Delete) utilizando React, NodeJS, Express com TypeScript e Firebase. Com o intutio de cadastrar produtos e poder excluir e deletar, e exibindo todos eles.
 
@@ -31,13 +30,20 @@ Este projeto consiste em criar um <strong>CRUD</strong>(Create, Read, Update, De
 ### Rodando a aplicação web
 
 ```bash
-# Instale as dependências
+# Instale as o CLI do firebase
+$ npm install -g firebase-tools
+
+# Para o backend
 $ npm install
+$ npm run build
+$ firebase serve
 
-# Execute a Aplicação
-$ npm start
+# Para o frontend
+$ npm install
+$ npm run dev
 
-# O servidor iniciara na porta:8080 - acesse http://localhost:8080
+<b>Note que para uso será necessário a instalação do firebase CLI<b>
+
 # A aplicação React iniciara na porta:3000 - acesse http://localhost:8080
 ```
 ## 📝 Licença
