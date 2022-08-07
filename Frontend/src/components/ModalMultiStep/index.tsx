@@ -31,6 +31,7 @@ function ModalMultiSteps<T extends { [key: string]: any } = any>({
   const saveInputsState = React.useCallback(() => {
     if (!formRef.current)
       return
+      if(bodyRef.current)
     Object.assign(
       bodyRef.current,
       Object.fromEntries(
@@ -77,17 +78,11 @@ function ModalMultiSteps<T extends { [key: string]: any } = any>({
         </S.Header>
         <S.Form
           ref={formRef}
-          onSubmit={event => {
-            event.preventDefault()
-            saveInputsState()
-            onSubmit(body)
-            console.log(body)
-          }}
         >
           <S.Span>
           Passo {currentStep + 1} de {steps.length}
           </S.Span>
-          {steps[currentStep].map((inputProps, i) => (
+          {steps[currentStep].map((inputProps) => (
             <S.Input
               key={inputProps.name as string}
               {...inputProps}
@@ -101,7 +96,15 @@ function ModalMultiSteps<T extends { [key: string]: any } = any>({
             ) : null}
             {currentStep === steps.length - 1
               ? (
-                <S.Button>Submit</S.Button>
+                <S.Button
+                onClick={()=>{
+                  saveInputsState()
+                  console.log(body)
+                  onSubmit(body),
+                  onClose()}}
+                >
+                  Submit
+                </S.Button>
               ) : (
                 <S.Button onClick={handleNext}>Próximo</S.Button>
               )}

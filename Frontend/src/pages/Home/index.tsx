@@ -66,7 +66,6 @@ const Home = () => {
                 .then(() => onUpdate(productUpdate, new_product))
                 .catch(({ message }) => console.log(message))
             } else {
-
               api.post('/product', new_product)
                 .then(() => (
                   onAdd(new_product)
