@@ -16,17 +16,6 @@ export const product = {
       ))
     return products
   },
-  async getByName(name: string) {
-    const Product = await fireStore
-      .collection('products')
-      .doc(name)
-      .get()
-      if (product) {
-
-        return Product.data()
-      }
-      return false
-  },
   async getProductById(id: string) {
     const Product = await fireStore
       .collection('products')

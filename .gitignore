@@ -208,4 +208,3 @@ dist-ssr
 *.sw?
 
 Backend/functions/lib
-Backend/functions/src/config/privateKey.json
