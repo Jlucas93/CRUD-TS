@@ -42,7 +42,7 @@ $ firebase serve
 $ npm install
 $ npm run dev
 
-<b>Note que para uso será necessário a instalação do firebase CLI<b>
+#Note que para uso será necessário a instalação do firebase CLI
 
 # A aplicação React iniciara na porta:3000 - acesse http://localhost:8080
 ```
